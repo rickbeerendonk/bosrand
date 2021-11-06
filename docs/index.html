@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Bosrand</title>
+    <style>
+      body {
+        margin: 0;
+      }
+    </style>
+  </head>
+  <body>
+    <img style="display: none" src="bosrand.png" />
+    <canvas height="1488" width="2046"></canvas>
+
+    <script>
+      function draw(latitude, longitude) {
+        const img = document.querySelector("img");
+        const canvas = document.querySelector("canvas");
+        const ctx = canvas.getContext("2d");
+
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.strokeStyle = "red";
+
+        ctx.drawImage(img, 0, 0);
+
+        const long = Math.max(
+          0,
+          Math.min(2046, (longitude - 4.483226367) / 0.000001811)
+        );
+        const lat = Math.max(
+          0,
+          Math.min(1488, (latitude - 52.267910821) / -0.000000872)
+        );
+
+        console.log(latitude);
+        console.log(longitude);
+        console.log("latitude: ", lat);
+        console.log("longitude: ", long);
+
+        ctx.beginPath();
+        ctx.arc(long, lat, 15, 0, 2 * Math.PI);
+        ctx.stroke();
+      }
+
+      function init() {
+        if (navigator.geolocation) {
+          navigator.geolocation.watchPosition(
+            positionCallback,
+            positionErrorCallback,
+            {
+              enableHighAccuracy: false,
+              maximumAge: 0,
+            }
+          );
+        }
+      }
+
+      function positionCallback(position) {
+        draw(position.coords.latitude, position.coords.longitude);
+        //draw(52.267386, 4.48367); // 245, 605
+        //draw(52.267318, 4.486703); // 1920, 680
+        return;
+      }
+
+      function positionErrorCallback(error) {
+        alert("Error " + error.code + ", " + error.message);
+      }
+
+      window.addEventListener("load", init, true);
+    </script>
+  </body>
+</html>
